@@ -4,9 +4,14 @@ Features: Login/Signup, Favourites, Quiz, Dark Mode, Search, TTS
 """
 
 import tkinter as tk
+from tkinter import scrolledtext, messagebox
 
-from tkinter import ttk, scrolledtext, messagebox
-import json, hashlib, os, random, threading, datetime
+import json
+import hashlib
+import os
+import random
+import threading
+import datetime
 
 try:
     import pyttsx3
