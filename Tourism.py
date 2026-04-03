@@ -2,6 +2,7 @@
 Incredible India — State Tourism Guide
 Features: Login/Signup, Favourites, Quiz, Dark Mode, Search, TTS
 """
+
 from tkinter import ttk, scrolledtext, messagebox
 import json, hashlib, os, random, threading, datetime
 
