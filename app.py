@@ -430,7 +430,7 @@ def quiz_answer():
             save_user_record(username, rec)
         return render_template("quiz_result.html", username=username,
                                score=score, total=len(questions))
-    return render_template("quiz.html", username=username if "username" in dir() else session["username"],
+    return render_template("quiz.html", username=session["username"],
                            question=questions[idx], idx=idx, total=len(questions),
                            last_correct=is_correct, last_answer=answer, last_correct_ans=correct)
 
