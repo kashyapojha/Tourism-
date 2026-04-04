@@ -1,6 +1,7 @@
 """
 Incredible India — Flask Web Application
 """
+
 import datetime
 import hashlib
 import json
