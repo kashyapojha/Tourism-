@@ -33,7 +33,7 @@ jobs:
       - name: Run tests
         run: pytest || echo "No tests found, continuing..."
 
-        
+
   # ─────────────────────────────
   # 2. SonarCloud Analysis
   # ─────────────────────────────
@@ -52,7 +52,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=kashyapojha_Incredible-India-Tourism
-            -Dsonar.organization="Kashyap Ojha"
+            -Dsonar.organization="kashyapojha"
             -Dsonar.sources=.
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.qualitygate.wait=true
