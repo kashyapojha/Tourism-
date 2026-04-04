@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
 
-env:  
+env:
   PYTHON_VERSION: "3.11"
   IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/incredible-india-tourism
 
@@ -18,7 +18,6 @@ jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -41,7 +40,6 @@ jobs:
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
     needs: build
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,7 +53,7 @@ jobs:
             -Dsonar.organization=incredible-india
             -Dsonar.sources=.
             -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.qualitygate.wait=true   # ✅ Wait for quality gate result
+            -Dsonar.qualitygate.wait=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -66,7 +64,6 @@ jobs:
     name: Docker Build & Push
     runs-on: ubuntu-latest
     needs: sonarcloud
-
     steps:
       - uses: actions/checkout@v4
 
