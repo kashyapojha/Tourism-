@@ -1,23 +1,43 @@
+name: Incredible India — App CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.11"
+  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/incredible-india-tourism
+
 jobs:
 
+  # ─────────────────────────────
+  # 1. Build & Test
+  # ─────────────────────────────
   build:
     name: Build & Test
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
           pip install pytest
+
       - name: Run tests
         run: pytest || echo "No tests found, continuing..."
 
-#SONARCLOUD
-
-  sonarcloud:   
+  # ─────────────────────────────
+  # 2. SonarCloud Analysis
+  # ─────────────────────────────
+  sonarcloud:
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
     needs: build
@@ -32,12 +52,13 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-# DOCKER 
-
+  # ─────────────────────────────
+  # 3. Docker Build & Push
+  # ─────────────────────────────
   docker:
     name: Docker Build & Push
     runs-on: ubuntu-latest
-    needs: sonarcloud   
+    needs: sonarcloud
 
     steps:
       - uses: actions/checkout@v4
