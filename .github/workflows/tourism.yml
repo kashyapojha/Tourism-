@@ -1,4 +1,4 @@
-name: Incredible India — App CI/CD
+name: Incredible India — Web CI/CD
 
 on:
   push:
