@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — Incredible India{% endblock %}
+{% block extra_head %}
+<style>
+.auth-wrap{min-height:calc(100vh - 60px);display:grid;place-items:center;background:linear-gradient(135deg,#1a3d2b 0%,#0d2118 60%,#1a3d2b 100%)}
+.auth-card{background:#fff;border-radius:20px;padding:2.5rem 2.8rem;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.25)}
+.auth-logo{text-align:center;margin-bottom:1.5rem}
+.auth-logo .flag{font-size:3rem}
+.auth-logo h1{font-family:'Playfair Display',serif;font-size:1.5rem;color:#1a3d2b;margin-top:6px}
+.auth-logo p{color:#6b7280;font-size:0.85rem}
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:0.82rem;color:#6b7280;margin-bottom:5px;font-weight:500}
+.form-group input{width:100%;padding:10px 14px;border:1.5px solid #e8e5dc;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.95rem;transition:border .2s;outline:none}
+.form-group input:focus{border-color:#1D9E75}
+.auth-btn{width:100%;padding:11px;background:#1D9E75;color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:500;cursor:pointer;transition:background .2s}
+.auth-btn:hover{background:#0F6E56}
+.auth-links{text-align:center;font-size:0.85rem;color:#6b7280;margin-top:14px}
+.auth-links a{color:#1D9E75;font-weight:500}
+.error-msg{background:#fde8e8;color:#9b1c1c;border-radius:6px;padding:8px 12px;font-size:0.84rem;margin-bottom:14px}
+.hint{font-size:0.78rem;color:#9ca3af;margin-top:3px}
+</style>
+{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="flag">🇮🇳</div>
+      <h1>Create Account</h1>
+      <p>Join Incredible India</p>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}<div class="error-msg">{{ msg }}</div>{% endfor %}
+    {% endwith %}
+    <form method="POST">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="At least 3 characters" required autofocus>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="At least 6 characters" required>
+        <div class="hint">Min. 6 characters</div>
+      </div>
+      <div class="form-group">
+        <label>Email <span style="color:#9ca3af">(optional)</span></label>
+        <input type="email" name="email" placeholder="you@example.com">
+      </div>
+      <button type="submit" class="auth-btn">Create Account →</button>
+    </form>
+    <div class="auth-links" style="margin-top:16px">
+      Already have an account? <a href="/login">Login</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

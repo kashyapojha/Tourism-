@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Quiz — Incredible India{% endblock %}
+{% block extra_head %}
+<style>
+.quiz-wrap{max-width:640px;margin:3rem auto;padding:0 1.5rem}
+.quiz-card{background:#fff;border-radius:16px;border:1.5px solid var(--border);padding:2rem;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.quiz-progress{font-size:0.82rem;color:var(--muted)}
+.quiz-progress-bar{height:5px;background:#e8e5dc;border-radius:3px;margin-top:6px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .4s}
+.quiz-q{font-family:'Playfair Display',serif;font-size:1.15rem;line-height:1.6;color:var(--text);margin-bottom:1.4rem}
+.quiz-opts{display:grid;gap:10px}
+.opt-btn{padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:#fff;text-align:left;font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;transition:all .2s;color:var(--text)}
+.opt-btn:hover{border-color:var(--accent);background:#f0fdf4}
+.opt-btn.correct{background:#d1fae5;border-color:#059669;color:#065f46;pointer-events:none}
+.opt-btn.wrong{background:#fde8e8;border-color:#e11d48;color:#9f1239;pointer-events:none}
+.opt-btn.neutral{opacity:0.5;pointer-events:none}
+.feedback{margin-top:1.2rem;padding:10px 14px;border-radius:8px;font-size:0.9rem;font-weight:500}
+.feedback.correct{background:#d1fae5;color:#065f46}
+.feedback.wrong{background:#fde8e8;color:#9f1239}
+.result-wrap{text-align:center;padding:2rem}
+.result-emoji{font-size:4rem;margin-bottom:12px}
+.result-score{font-family:'Playfair Display',serif;font-size:2rem;color:var(--green)}
+.result-pct{font-size:1rem;color:var(--muted);margin-top:4px}
+.result-msg{margin:1rem 0;color:var(--text);font-size:0.95rem}
+</style>
+{% endblock %}
+{% block content %}
+<div class="quiz-wrap">
+  <div class="quiz-card">
+    {% if question is defined %}
+    <div class="quiz-header">
+      <span style="font-family:'Playfair Display',serif;font-size:1.1rem">🧠 India Quiz</span>
+      <div>
+        <div class="quiz-progress">Question {{ idx + 1 }} of {{ total }}</div>
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width: {{ ((idx+1)/total*100)|int }}%"></div></div>
+      </div>
+    </div>
+
+    {% if last_correct is defined %}
+    <div class="feedback {% if last_correct %}correct{% else %}wrong{% endif %}">
+      {% if last_correct %}✓ Correct!{% else %}✗ Wrong. Answer: {{ last_correct_ans }}{% endif %}
+    </div>
+    {% endif %}
+
+    <div class="quiz-q">{{ question.q }}</div>
+
+    <form method="POST" action="/quiz/answer">
+      <div class="quiz-opts">
+        {% for opt in question.shuffled %}
+        <button type="submit" name="answer" value="{{ opt }}" class="opt-btn">{{ opt }}</button>
+        {% endfor %}
+      </div>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

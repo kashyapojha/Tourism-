@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Quiz Result — Incredible India{% endblock %}
+{% block extra_head %}
+<style>
+.result-wrap{max-width:500px;margin:3rem auto;padding:0 1.5rem;text-align:center}
+.result-card{background:#fff;border-radius:16px;border:1.5px solid var(--border);padding:2.5rem;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+.result-emoji{font-size:4rem;margin-bottom:12px}
+.result-score{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--green)}
+.result-pct{font-size:1rem;color:var(--muted);margin-top:4px}
+.result-msg{margin:1rem 0 1.5rem;color:var(--text);font-size:0.95rem;line-height:1.6}
+.result-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+</style>
+{% endblock %}
+{% block content %}
+<div class="result-wrap">
+  <div class="result-card">
+    {% set pct = ((score / total) * 100)|int %}
+    <div class="result-emoji">{% if pct >= 80 %}🏆{% elif pct >= 50 %}👍{% else %}📚{% endif %}</div>
+    <div class="result-score">{{ score }} / {{ total }}</div>
+    <div class="result-pct">{{ pct }}% correct</div>
+    <div class="result-msg">
+      {% if pct >= 80 %}Outstanding knowledge of Incredible India!
+      {% elif pct >= 50 %}Good effort! Keep exploring the states to learn more.
+      {% else %}Keep visiting states — there's so much to discover!{% endif %}
+    </div>
+    <div class="result-btns">
+      <a href="/quiz" class="btn btn-primary">Play Again</a>
+      <a href="/home" class="btn btn-outline">Explore States</a>
+      {% if username != 'guest' %}
+      <a href="/profile" class="btn btn-outline">My Profile</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

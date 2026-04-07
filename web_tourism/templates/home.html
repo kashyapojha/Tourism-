@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+{% block title %}Explore India — Incredible India{% endblock %}
+
+{% block extra_head %}
+<style>
+.hero{
+    background:var(--green);
+    color:#fff;
+    padding:3rem 2rem 2.5rem;
+    text-align:center
+}
+.hero h1{
+    font-family:'Playfair Display',serif;
+    font-size:2.4rem;
+    margin-bottom:8px
+}
+.hero p{
+    color:rgba(255,255,255,0.7);
+    font-size:0.95rem
+}
+.stats-bar{
+    display:flex;
+    justify-content:center;
+    gap:2rem;
+    margin-top:1.4rem;
+    flex-wrap:wrap
+}
+.stat{
+    background:rgba(255,255,255,0.1);
+    border-radius:10px;
+    padding:8px 20px;
+    text-align:center
+}
+.stat-num{
+    font-family:'Playfair Display',serif;
+    font-size:1.4rem;
+    color:#1D9E75
+}
+.stat-lbl{
+    font-size:0.75rem;
+    color:rgba(255,255,255,0.6);
+    margin-top:2px
+}
+.toolbar{
+    max-width:1100px;
+    margin:1.4rem auto;
+    padding:0 1.5rem;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap
+}
+.search-wrap{
+    flex:1;
+    min-width:200px;
+    position:relative
+}
+.search-wrap input{
+    width:100%;
+    padding:10px 16px 10px 40px;
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    font-family:'DM Sans',sans-serif;
+    font-size:0.9rem;
+    background:#fff;
+    outline:none;
+    transition:border .2s
+}
+.search-wrap input:focus{
+    border-color:var(--accent)
+}
+.search-wrap .icon{
+    position:absolute;
+    left:13px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#9ca3af;
+    font-size:1rem
+}
+.random-btn{
+    padding:10px 16px;
+    border-radius:10px;
+    background:#7c3aed;
+    color:#fff;
+    border:none;
+    font-family:'DM Sans',sans-serif;
+    cursor:pointer;
+    font-size:0.88rem;
+    white-space:nowrap;
+    transition:background .2s
+}
+.random-btn:hover{
+    background:#6d28d9
+}
+.grid{
+    max-width:1100px;
+    margin:0 auto 3rem;
+    padding:0 1.5rem;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+    gap:14px
+}
+.card{
+    background:var(--card);
+    border-radius:14px;
+    border:1.5px solid var(--border);
+    padding:1.2rem;
+    cursor:pointer;
+    transition:all .2s;
+    position:relative;
+    overflow:hidden
+}
+.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    border-color:var(--accent)
+}
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:8px
+}
+.card-emoji{
+    font-size:2rem
+}
+.card-badges{
+    display:flex;
+    gap:4px
+}
+.badge{
+    font-size:0.7rem;
+    padding:2px 6px;
+    border-radius:20px
+}
+.badge-fav{
+    background:#fef3c7;
+    color:#92400e
+}
+.badge-vis{
+    background:#d1fae5;
+    color:#065f46
+}
+.card-name{
+    font-family:'Playfair Display',serif;
+    font-size:1rem;
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:4px
+}
+.card-tag{
+    font-size:0.75rem;
+    color:var(--muted)
+}
+.card-bar{
+    height:3px;
+    width:100%;
+    border-radius:2px;
+    margin-top:10px;
+    opacity:0.5
+}
+.no-results{
+    text-align:center;
+    padding:4rem;
+    color:var(--muted);
+    grid-column:1/-1
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <h1>🇮🇳 Explore Incredible India</h1>
+  <p>Discover the culture, cuisine and wonders of India's states and union territories</p>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num">{{ total }}</div>
+      <div class="stat-lbl">States & UTs</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-num" id="fav-count">{{ favourites|length }}</div>
+      <div class="stat-lbl">Favourites</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-num" id="vis-count">{{ visited|length }}</div>
+      <div class="stat-lbl">Visited</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-num">
+        {{ ((visited|length / total) * 100)|int if total > 0 else 0 }}%
+      </div>
+      <div class="stat-lbl">Explored</div>
+    </div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="icon">🔍</span>
+    <input type="text" id="search" placeholder="Search states, cuisines, places...">
+  </div>
+
+  <button class="random-btn" onclick="goRandom()">🎲 Random State</button>
+
+  <a href="/itinerary" style="padding:10px 14px;border-radius:10px;background:var(--card);border:1.5px solid var(--border);font-size:0.88rem;color:var(--text)">
+    🗺️ Itinerary
+  </a>
+  <a href="/compare" style="padding:10px 14px;border-radius:10px;background:var(--card);border:1.5px solid var(--border);font-size:0.88rem;color:var(--text)">
+    ⚖️ Compare
+  </a>
+
+  {% if username != 'guest' %}
+  <a href="/profile" style="padding:10px 14px;border-radius:10px;background:var(--card);border:1.5px solid var(--border);font-size:0.88rem;color:var(--text)">
+    ⭐ My Profile
+  </a>
+  {% endif %}
+</div>
+
+<div style="max-width:1100px;margin:0 auto 1rem;padding:0 1.5rem">
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:12px 14px">
+    <div style="font-weight:600">Filters</div>
+    <select id="filter-region" style="padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text)">
+      <option value="">All regions</option>
+      <option>North</option><option>South</option><option>East</option><option>West</option><option>Central</option><option>Northeast</option>
+    </select>
+    <select id="filter-climate" style="padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text)">
+      <option value="">All climates</option>
+      <option>Coastal</option><option>Tropical</option><option>Subtropical</option><option>Temperate</option><option>Alpine</option><option>Arid</option>
+    </select>
+    <select id="filter-theme" style="padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text)">
+      <option value="">All themes</option>
+      <option>beach</option><option>heritage</option><option>wildlife</option><option>hill</option><option>desert</option><option>spirituality</option><option>food</option><option>adventure</option><option>culture</option>
+    </select>
+    <label style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:0.88rem">
+      <input type="checkbox" id="filter-family" />
+      Family friendly
+    </label>
+    <button class="btn btn-outline btn-sm" type="button" id="filter-clear">Clear</button>
+  </div>
+</div>
+
+<div style="max-width:1100px;margin:0 auto 1rem;padding:0 1.5rem">
+  <div style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px">
+    <div style="font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--green);margin-bottom:8px">Interactive India map (quick)</div>
+    <div style="color:var(--muted);font-size:0.88rem;margin-bottom:10px">Click a label to open the state/UT page.</div>
+    <svg viewBox="0 0 1100 260" width="100%" height="260" role="img" aria-label="India states and UTs map">
+      <rect x="0" y="0" width="1100" height="260" rx="16" fill="rgba(29,158,117,0.06)"></rect>
+      {% set names = states|map(attribute='key')|list %}
+      {% for name in names %}
+        {% set i = loop.index0 %}
+        {% set col = i % 6 %}
+        {% set row = (i // 6) %}
+        {% set x = 20 + col*180 %}
+        {% set y = 30 + row*40 %}
+        <a href="/state/{{ name }}" target="_self">
+          <text x="{{ x }}" y="{{ y }}" font-size="14" fill="var(--green)" style="cursor:pointer">{{ name }}</text>
+        </a>
+      {% endfor %}
+    </svg>
+  </div>
+</div>
+
+<div class="grid" id="grid">
+  {% for s in states %}
+  <div class="card state-card"
+       data-name="{{ s.key }}"
+       data-tag="{{ s.tag }}"
+       data-food="{{ s.food|join(' ') if s.food else '' }}"
+       data-places="{{ s.places|join(' ') if s.places else '' }}"
+       data-region="{{ s.meta.region }}"
+       data-climate="{{ s.meta.climate }}"
+       data-themes="{{ s.meta.themes|join(' ') }}"
+       data-family="{{ 1 if s.meta.family_friendly else 0 }}"
+       onclick="location.href='/state/{{ s.key }}'">
+
+    <div class="card-top">
+      <span class="card-emoji">{{ s.emoji }}</span>
+
+      <div class="card-badges">
+        {% if s.key in favourites %}
+        <span class="badge badge-fav">⭐ Fav</span>
+        {% endif %}
+
+        {% if s.key in visited %}
+        <span class="badge badge-vis">✓ Visited</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card-name">{{ s.key }}</div>
+    <div class="card-tag">{{ s.tag }}</div>
+    <div class="card-bar" data-color="{{ s.color }}"></div>
+  </div>
+  {% endfor %}
+
+  <div class="no-results" id="no-results" style="display:none">
+    No states match your search.
+  </div>
+</div>
+
+<script>
+function goRandom() {
+    const cards = document.querySelectorAll(".state-card");
+    if (cards.length === 0) return;
+
+    const randomIndex = Math.floor(Math.random() * cards.length);
+    const stateKey = cards[randomIndex].dataset.name;
+
+    window.location.href = "/state/" + stateKey;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setupSearch('search', '.state-card');
+
+  // Apply accent bar colors from data attribute (keeps template CSS-lint clean)
+  document.querySelectorAll('.card-bar[data-color]').forEach(el => {
+    const c = el.dataset.color;
+    if (c) el.style.background = c;
+  });
+
+  const regionEl = document.getElementById('filter-region');
+  const climateEl = document.getElementById('filter-climate');
+  const themeEl = document.getElementById('filter-theme');
+  const familyEl = document.getElementById('filter-family');
+  const clearEl = document.getElementById('filter-clear');
+
+  function applyFilters() {
+    const q = (document.getElementById('search').value || '').toLowerCase().trim();
+    const region = (regionEl.value || '').toLowerCase();
+    const climate = (climateEl.value || '').toLowerCase();
+    const theme = (themeEl.value || '').toLowerCase();
+    const family = !!familyEl.checked;
+
+    let visible = 0;
+    document.querySelectorAll('.state-card').forEach(card => {
+      const text = [
+        card.dataset.name || '',
+        card.dataset.tag || '',
+        card.dataset.food || '',
+        card.dataset.places || '',
+      ].join(' ').toLowerCase();
+
+      const okSearch = !q || text.includes(q);
+      const okRegion = !region || (card.dataset.region || '').toLowerCase() === region;
+      const okClimate = !climate || (card.dataset.climate || '').toLowerCase() === climate;
+      const okTheme = !theme || (card.dataset.themes || '').toLowerCase().includes(theme);
+      const okFamily = !family || String(card.dataset.family) === '1';
+
+      const ok = okSearch && okRegion && okClimate && okTheme && okFamily;
+      card.style.display = ok ? '' : 'none';
+      if (ok) visible++;
+    });
+
+    const noResults = document.getElementById('no-results');
+    if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  ['input','change'].forEach(evt => {
+    document.getElementById('search').addEventListener(evt, applyFilters);
+    regionEl.addEventListener(evt, applyFilters);
+    climateEl.addEventListener(evt, applyFilters);
+    themeEl.addEventListener(evt, applyFilters);
+    familyEl.addEventListener(evt, applyFilters);
+  });
+  clearEl.addEventListener('click', () => {
+    regionEl.value = '';
+    climateEl.value = '';
+    themeEl.value = '';
+    familyEl.checked = false;
+    document.getElementById('search').value = '';
+    applyFilters();
+  });
+});
+</script>
+
+{% endblock %}

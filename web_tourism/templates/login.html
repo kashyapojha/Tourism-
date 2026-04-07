@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Login — Incredible India{% endblock %}
+{% block extra_head %}
+<style>
+.auth-wrap{min-height:calc(100vh - 60px);display:grid;place-items:center;background:linear-gradient(135deg,#1a3d2b 0%,#0d2118 60%,#1a3d2b 100%)}
+.auth-card{background:#fff;border-radius:20px;padding:2.5rem 2.8rem;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.25)}
+.auth-logo{text-align:center;margin-bottom:1.5rem}
+.auth-logo .flag{font-size:3rem}
+.auth-logo h1{font-family:'Playfair Display',serif;font-size:1.5rem;color:#1a3d2b;margin-top:6px}
+.auth-logo p{color:#6b7280;font-size:0.85rem;margin-top:2px}
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:0.82rem;color:#6b7280;margin-bottom:5px;font-weight:500}
+.form-group input{width:100%;padding:10px 14px;border:1.5px solid #e8e5dc;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.95rem;transition:border .2s;outline:none}
+.form-group input:focus{border-color:#1D9E75}
+.auth-btn{width:100%;padding:11px;background:#1D9E75;color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:500;cursor:pointer;transition:background .2s;margin-top:4px}
+.auth-btn:hover{background:#0F6E56}
+.auth-divider{text-align:center;color:#9ca3af;font-size:0.82rem;margin:14px 0;position:relative}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:#e8e5dc}
+.auth-divider::before{left:0}.auth-divider::after{right:0}
+.auth-links{text-align:center;font-size:0.85rem;color:#6b7280;margin-top:14px}
+.auth-links a{color:#1D9E75;font-weight:500}
+.guest-btn{width:100%;padding:10px;background:transparent;border:1.5px solid #e8e5dc;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.88rem;cursor:pointer;color:#6b7280;transition:all .2s}
+.guest-btn:hover{border-color:#1D9E75;color:#1D9E75}
+.error-msg{background:#fde8e8;color:#9b1c1c;border-radius:6px;padding:8px 12px;font-size:0.84rem;margin-bottom:14px}
+</style>
+{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="flag">🇮🇳</div>
+      <h1>Incredible India</h1>
+      <p>State Tourism Guide</p>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}<div class="error-msg">{{ msg }}</div>{% endfor %}
+    {% endwith %}
+    <form method="POST">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Enter username" required autofocus>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter password" required>
+      </div>
+      <button type="submit" class="auth-btn">Login →</button>
+    </form>
+    <div class="auth-divider">or</div>
+    <button class="guest-btn" onclick="location.href='/guest'">🧭 Continue as Guest</button>
+    <div class="auth-links">
+      Don't have an account? <a href="/signup">Sign Up</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

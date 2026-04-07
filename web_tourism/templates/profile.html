@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Profile — Incredible India{% endblock %}
+{% block extra_head %}
+<style>
+.profile-wrap{max-width:860px;margin:2rem auto;padding:0 1.5rem}
+.profile-header{background:var(--green);border-radius:16px;padding:2rem;color:#fff;display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.avatar{width:70px;height:70px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.8rem;color:#fff;flex-shrink:0}
+.profile-name{font-family:'Playfair Display',serif;font-size:1.6rem}
+.profile-meta{font-size:0.82rem;color:rgba(255,255,255,0.65);margin-top:4px}
+.progress-bar-wrap{margin-top:10px;background:rgba(255,255,255,0.15);border-radius:20px;height:8px;overflow:hidden;width:200px;max-width:100%}
+.progress-bar-fill{height:100%;background:var(--accent);border-radius:20px;transition:width 1s}
+.cards-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.pcard{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:1.4rem}
+.pcard-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--green);margin-bottom:10px}
+.state-chip{display:inline-block;padding:4px 10px;border-radius:6px;background:#f0fdf4;border:1px solid #bbf7d0;color:#065f46;font-size:0.8rem;margin:3px}
+.state-chip a{color:inherit}
+.score-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.85rem;color:var(--muted)}
+.score-row:last-child{border-bottom:none}
+.score-val{font-weight:500;color:var(--text)}
+.empty-msg{color:var(--muted);font-size:0.88rem;font-style:italic}
+.explore-pct{font-size:0.8rem;color:rgba(255,255,255,0.6);margin-top:4px}
+</style>
+{% endblock %}
+{% block content %}
+<div class="profile-wrap">
+  <div class="profile-header">
+    <div class="avatar">{{ username[0].upper() }}</div>
+    <div>
+      <div class="profile-name">{{ username }}</div>
+      <div class="profile-meta">
+        {% if email %}{{ email }} · {% endif %}Joined {{ joined }}
+      </div>
+      <div class="explore-pct">🗺️ {{ ((visited|length / total) * 100)|int }}% of India explored</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" style="width: {{ ((visited|length / total) * 100)|int }}%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards-row">
+    <div class="pcard">
+      <div class="pcard-title">⭐ Favourite States ({{ favourites|length }})</div>
+      {% if favourites %}
+        {% for f in favourites %}
+        <span class="state-chip"><a href="/state/{{ f }}">{{ states[f].emoji }} {{ f }}</a></span>
+        {% endfor %}
+      {% else %}
+        <div class="empty-msg">No favourites yet. Explore states and star your favourites!</div>
+      {% endif %}
+    </div>
+
+    <div class="pcard">
+      <div class="pcard-title">✓ Visited States ({{ visited|length }}/{{ total }})</div>
+      {% if visited %}
+        {% for v in visited %}
+        <span class="state-chip"><a href="/state/{{ v }}">{{ states[v].emoji }} {{ v }}</a></span>
+        {% endfor %}
+      {% else %}
+        <div class="empty-msg">No states visited yet. Start your journey!</div>
+      {% endif %}
+    </div>
+
+    <div class="pcard">
+      <div class="pcard-title">🧠 Quiz History ({{ quiz_scores|length }} attempts)</div>
+      {% if quiz_scores %}
+        {% for s in quiz_scores|reverse %}
+        <div class="score-row">
+          <span>{{ s.date }}</span>
+          <span class="score-val">{{ s.score }}/{{ s.total }} ({{ ((s.score/s.total)*100)|int }}%)</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-msg">No quiz attempts yet. <a href="/quiz" style="color:var(--accent)">Take the quiz!</a></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ username }} — Public Profile{% endblock %}
+{% block content %}
+<div style="max-width:860px;margin:2rem auto;padding:0 1.5rem">
+  <div style="background:var(--green);border-radius:16px;padding:2rem;color:#fff;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.2rem">
+    <div style="width:70px;height:70px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.8rem;color:#fff">{{ username[0].upper() }}</div>
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.6rem">{{ username }}</div>
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.65)">
+        {% if email %}{{ email }} · {% endif %}Joined {{ joined }}
+      </div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <a class="btn btn-gold btn-sm" href="/public/{{ username }}/pdf">⬇️ Export PDF</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards-row" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+    <div class="pcard" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:1.4rem">
+      <div class="pcard-title" style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--green);margin-bottom:10px">⭐ Favourite ({{ favourites|length }})</div>
+      {% if favourites %}
+        {% for f in favourites %}
+        <div style="margin:4px 0"><a href="/state/{{ f }}" style="color:var(--accent)">{{ states[f].emoji }} {{ f }}</a></div>
+        {% endfor %}
+      {% else %}
+        <div style="color:var(--muted);font-style:italic">No favourites yet.</div>
+      {% endif %}
+    </div>
+
+    <div class="pcard" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:1.4rem">
+      <div class="pcard-title" style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--green);margin-bottom:10px">✓ Visited ({{ visited|length }}/{{ total }})</div>
+      {% if visited %}
+        {% for v in visited %}
+        <div style="margin:4px 0"><a href="/state/{{ v }}" style="color:var(--accent)">{{ states[v].emoji }} {{ v }}</a></div>
+        {% endfor %}
+      {% else %}
+        <div style="color:var(--muted);font-style:italic">No states visited yet.</div>
+      {% endif %}
+    </div>
+
+    <div class="pcard" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:1.4rem">
+      <div class="pcard-title" style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--green);margin-bottom:10px">🧠 Quiz history</div>
+      {% if quiz_scores %}
+        {% for s in quiz_scores|reverse %}
+        <div style="display:flex;justify-content:space-between;color:var(--muted);font-size:0.88rem;padding:6px 0;border-bottom:1px solid var(--border)">
+          <span>{{ s.date }}</span>
+          <span style="font-weight:500;color:var(--text)">{{ s.score }}/{{ s.total }}</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div style="color:var(--muted);font-style:italic">No attempts yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

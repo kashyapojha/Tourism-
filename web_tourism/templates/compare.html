@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Compare — Incredible India{% endblock %}
+{% block content %}
+<div style="max-width:1100px;margin:1.8rem auto;padding:0 1.5rem">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+    <div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--green)">⚖️ Compare states/UTs</div>
+    <a class="btn btn-outline btn-sm" href="/home">← Back</a>
+  </div>
+
+  <form method="GET" action="/compare" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:12px 14px">
+    <select name="a" required style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text)">
+      <option value="" disabled {% if not a %}selected{% endif %}>Select first</option>
+      {% for k in states.keys() %}
+      <option value="{{ k }}" {% if a==k %}selected{% endif %}>{{ k }}</option>
+      {% endfor %}
+    </select>
+    <select name="b" required style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text)">
+      <option value="" disabled {% if not b %}selected{% endif %}>Select second</option>
+      {% for k in states.keys() %}
+      <option value="{{ k }}" {% if b==k %}selected{% endif %}>{{ k }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-primary" type="submit">Compare</button>
+  </form>
+
+  {% if state_a and state_b %}
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:14px">
+    <div class="card" style="padding:14px;border-radius:14px;border:1.5px solid var(--border)">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--green)">{{ state_a.emoji }} {{ a }}</div>
+      <div style="color:var(--muted);margin-bottom:10px">{{ state_a.tag }}</div>
+      <div class="section-title">Overview</div>
+      <div style="color:var(--text);line-height:1.75">{{ state_a.overview }}</div>
+      <div class="section-title">Best time</div>
+      <div style="color:var(--muted);line-height:1.75">{{ state_a.best_time }}</div>
+    </div>
+
+    <div class="card" style="padding:14px;border-radius:14px;border:1.5px solid var(--border)">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--green)">{{ state_b.emoji }} {{ b }}</div>
+      <div style="color:var(--muted);margin-bottom:10px">{{ state_b.tag }}</div>
+      <div class="section-title">Overview</div>
+      <div style="color:var(--text);line-height:1.75">{{ state_b.overview }}</div>
+      <div class="section-title">Best time</div>
+      <div style="color:var(--muted);line-height:1.75">{{ state_b.best_time }}</div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

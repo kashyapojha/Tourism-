@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}{{ state_key }} — Incredible India{% endblock %}
+{% block extra_head %}
+<style>
+.state-hero{
+    background:var(--green);
+    padding:2rem 2rem 0;
+    position:relative;
+    overflow:hidden
+}
+.state-hero-inner{max-width:960px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-bottom:1.5rem}
+.state-hero-left h1{font-family:'Playfair Display',serif;font-size:2rem;color:#fff}
+.state-tag{color:rgba(255,255,255,0.65);font-size:0.9rem;margin-top:4px}
+.state-emoji-big{font-size:4rem;line-height:1}
+.action-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.action-btn{padding:8px 16px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.85);background:transparent;font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;transition:all .2s}
+.action-btn:hover,.action-btn.active{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.6);color:#fff}
+.action-btn.fav-active{background:#f59e0b;border-color:#f59e0b;color:#fff}
+.action-btn.vis-active{background:var(--accent);border-color:var(--accent);color:#fff}
+.action-btn.tts{border-color:rgba(255,255,255,0.25)}
+.action-btn.tts:disabled{opacity:0.6;cursor:not-allowed}
+.tab-bar{background:var(--green);border-top:1px solid rgba(255,255,255,0.1)}
+.tab-bar-inner{max-width:960px;margin:0 auto;display:flex;overflow-x:auto}
+.tab{padding:12px 20px;color:rgba(255,255,255,0.6);font-size:0.88rem;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.tab:hover{color:rgba(255,255,255,0.9)}
+.tab.active{color:#fff;border-bottom-color:var(--accent)}
+.content-area{max-width:960px;margin:1.8rem auto 3rem;padding:0 1.5rem}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.overview-text{font-size:1rem;line-height:1.8;color:var(--text)}
+.section-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--green);margin-bottom:12px;margin-top:1.5rem}
+.section-title:first-child{margin-top:0}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.pill{padding:5px 14px;border-radius:20px;font-size:0.82rem;font-weight:500}
+.pill-food{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+.pill-place{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd}
+.pill-fact{background:#fce7f3;color:#9d174d;border:1px solid #f9a8d4}
+.note-text{font-size:0.92rem;line-height:1.75;color:var(--muted)}
+.best-time-box{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;font-size:0.95rem;line-height:1.75;border-left:4px solid var(--accent)}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,0.7);font-size:0.85rem;margin-bottom:1rem;cursor:pointer}
+.back-link:hover{color:#fff}
+</style>
+{% endblock %}
+{% block content %}
+<div class="state-hero">
+  <div class="state-hero-inner">
+    <div class="state-hero-left">
+      <a href="/home" class="back-link">← Back to all states</a>
+      <h1>{{ state.emoji }} {{ state_key }}</h1>
+      <div class="state-tag">{{ state.tag }}</div>
+      <div class="action-btns">
+        {% if username != 'guest' %}
+        <button class="action-btn {% if is_fav %}fav-active{% endif %}" id="fav-btn">
+          {% if is_fav %}★ Remove Favourite{% else %}☆ Add to Favourites{% endif %}
+        </button>
+        <button class="action-btn {% if is_visited %}vis-active{% endif %}" id="vis-btn">
+          {% if is_visited %}✓ Visited!{% else %}○ Mark as Visited{% endif %}
+        </button>
+        {% endif %}
+        <button class="action-btn tts" id="tts-read" type="button">🔊 Read Aloud</button>
+        <button class="action-btn tts" id="tts-stop" type="button" disabled>⏹ Stop</button>
+      </div>
+    </div>
+    <div class="state-emoji-big">{{ state.emoji }}</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab-bar-inner">
+    <div class="tab active" onclick="showTab('overview',this)">Overview</div>
+    <div class="tab" onclick="showTab('food',this)">🍽️ Food</div>
+    <div class="tab" onclick="showTab('places',this)">📍 Places</div>
+    <div class="tab" onclick="showTab('time',this)">📅 Best Time</div>
+    <div class="tab" onclick="showTab('facts',this)">💡 Fun Facts</div>
+  </div>
+</div>
+
+<div class="content-area">
+  <div class="tab-panel active" id="tab-overview">
+    <p class="overview-text">{{ state.overview }}</p>
+  </div>
+
+  <div class="tab-panel" id="tab-food">
+    <div class="section-title">Must-try dishes</div>
+    <div class="pills">
+      {% for f in state.food %}<span class="pill pill-food">{{ f }}</span>{% endfor %}
+    </div>
+    <p class="note-text">{{ state.food_note }}</p>
+  </div>
+
+  <div class="tab-panel" id="tab-places">
+    <div class="section-title">Top places to visit</div>
+    <div class="pills">
+      {% for p in state.places %}<span class="pill pill-place">{{ p }}</span>{% endfor %}
+    </div>
+    <p class="note-text">{{ state.places_note }}</p>
+  </div>
+
+  <div class="tab-panel" id="tab-time">
+    <div class="best-time-box">{{ state.best_time }}</div>
+  </div>
+
+  <div class="tab-panel" id="tab-facts">
+    <div class="section-title">Fun facts</div>
+    <div class="pills">
+      {% for f in state.facts %}<span class="pill pill-fact">{{ f }}</span>{% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+const stateKey = {{ state_key|tojson }};
+
+// Tab switching
+function showTab(id, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  el.classList.add('active');
+}
+
+// Wire buttons via main.js utilities once DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  setupFavButton(document.getElementById('fav-btn'), stateKey);
+  setupVisitedButton(document.getElementById('vis-btn'), stateKey);
+  setupReadAloud(
+    document.getElementById('tts-read'),
+    document.getElementById('tts-stop'),
+    () => {
+      const active = document.querySelector('.tab-panel.active');
+      return active ? active.innerText : '';
+    }
+  );
+});
+</script>
+{% endblock %}
